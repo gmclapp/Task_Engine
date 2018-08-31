@@ -1,6 +1,6 @@
 '''This script allows a burn-down style of task management.'''
 
-__version__ = "0.0.4"
+__version__ = "0.0.rc5"
 
 import json
 import os
@@ -21,7 +21,7 @@ class Tee(object):
             f.flush()
 
 class taskobj():
-    def __init__(self, serial_number, name, program_number = None,
+    def __init__(self, serial_number=None, name=None, program_number = None,
                  date_assigned = "Unknown",date_due = "TBD",
                  time_assigned = 0, time_due = 1700, hours_to_complete = 40,
                  description = None, notes = None, task_type = None,
@@ -59,10 +59,9 @@ class taskobj():
     def tprint(self):
         '''This method prints a task and it's attributes to the console
         as well as to the log file.'''
-        
-        print("Serial number:",self.Attributes["Serial number"])
-        print("Name:", self.Attributes["Name"])
-        print("Program number:", self.Attributes["Program number"])
+
+        for key, value in self.Attributes.items():
+            print(key, ":", value)
         
     def calc_priority(self):
         pass
@@ -75,9 +74,21 @@ class taskobj():
     def delete_parent(self, parent):
         pass
     def save_task(self):
-        pass
-    def load_task(self):
-        pass
+        '''This method saves the task object to a json file. It appends
+        the serial number of the task to the file name.'''
+        temp = str(self.Attributes["Serial number"])
+        filename = "task" + temp
+        
+        with open(filename, 'w') as f:
+            json.dump(self.Attributes, f)
+        
+    def load_task(self, sn):
+        '''This method loads an Attribute dictionary into a task object
+        given a filename.'''
+        filename = "task" + str(sn)
+        with open(filename, 'r') as f:
+            self.Attributes = json.load(f)
+                      
     def archive_task(self):
         pass
 
@@ -102,8 +113,8 @@ with open("Task_Engine.log", 'a') as log:
               "(0) Quit",
               "(1) New task",
               "(2) Edit existing task",sep = '\n')
-        key = input(">>>")
-        if key == '1':
+        key = si.get_integer(">>>",3,-1)
+        if key == 1:
             max_sn = 0
             for task in task_list:
                 if task.Attributes["Serial number"] > max_sn:
@@ -113,19 +124,20 @@ with open("Task_Engine.log", 'a') as log:
             new_sn = max_sn + 1
             print("New task")
             task_name = input("Enter task name\n>>>")
-            print("Is this task associated with a program?")
-            ans = input("(y/n)>>>")
-            if ans == 'y' or ans == 'Y':
+            
+            ans = si.get_letter("Is this task associated with a program?\n>>>",
+                                ['y','Y','n','N'])
+            if ans.lower() == 'y':
                 prog_num = input("Enter program number\n>>>")
-            elif ans == 'n' or ans == 'N':
+            elif ans.lower() == 'n':
                 prog_num = None
             new_task = taskobj(new_sn, task_name, prog_num)
             task_list.append(new_task)
             task_list[-1].tprint()
                        
-        elif key == '2':
+        elif key == 2:
             pass
-        elif key == '0':
+        elif key == 0:
             break
         else:
             print("Invalid entry")
