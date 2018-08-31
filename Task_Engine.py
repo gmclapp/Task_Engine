@@ -1,10 +1,12 @@
+'''This script allows a burn-down style of task management.'''
+
+__version__ = "0.0.4"
+
 import json
 import os
 import sys
 import time
 import sanitize_inputs as si
-
-version = "0.0.4"
 
 class Tee(object):
     '''This  class is used to send duplicate messages to a log file.'''
@@ -80,7 +82,7 @@ class taskobj():
         pass
 
 def load_config():
-    print("Version", version)
+    pass
     #Create config file if it does not exist
     #Notify user if config file is corrupted. They can chose to overwrite it.
 
