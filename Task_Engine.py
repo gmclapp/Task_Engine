@@ -21,7 +21,7 @@ class Tee(object):
             f.flush()
 
 class taskobj():
-    def __init__(self, serial_number, name, program_number = None,
+    def __init__(self, serial_number=None, name=None, program_number = None,
                  date_assigned = "Unknown",date_due = "TBD",
                  time_assigned = 0, time_due = 1700, hours_to_complete = 40,
                  description = None, notes = None, task_type = None,
@@ -74,9 +74,19 @@ class taskobj():
     def delete_parent(self, parent):
         pass
     def save_task(self):
-        pass
-    def load_task(self):
-        pass
+        '''This method saves the task object to a json file. It appends
+        the serial number of the task to the file name.'''
+        filename = "task" + str(self.Attributes['Serial Number'])
+        with open(filename, 'w') as f:
+            json.dump(self.Attributes, f)
+        
+    def load_task(self, sn):
+        '''This method loads an Attribute dictionary into a task object
+        given a filename.'''
+        filename = "task" + str(sn)
+        with open(filename, 'r') as f:
+            self.Attributes = json.load(f)
+                      
     def archive_task(self):
         pass
 
