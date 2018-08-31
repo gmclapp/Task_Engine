@@ -76,7 +76,9 @@ class taskobj():
     def save_task(self):
         '''This method saves the task object to a json file. It appends
         the serial number of the task to the file name.'''
-        filename = "task" + str(self.Attributes['Serial Number'])
+        temp = str(self.Attributes["Serial number"])
+        filename = "task" + temp
+        
         with open(filename, 'w') as f:
             json.dump(self.Attributes, f)
         
@@ -97,9 +99,9 @@ def load_config():
 
 with open("Task_Engine.log", 'a') as log:
     #This opens the log file in append mode. opening in this way ensures that if an unexpected closure happens, the log is presserved.
-    original = sys.stdout
+    #original = sys.stdout
     #This line preserves the ability to print to stdout without logging.
-    sys.stdout = Tee(sys.stdout, log)
+    #sys.stdout = Tee(sys.stdout, log)
     #This line overwrites sys.stdout with both the original stdout and the log object so that the default print command will print to both.
     load_config()
 
