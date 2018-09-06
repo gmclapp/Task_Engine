@@ -1,6 +1,6 @@
 '''This script allows a burn-down style of task management.'''
 
-__version__ = "0.0.rc5"
+__version__ = "0.0.rc6"
 
 import json
 import os
@@ -8,17 +8,17 @@ import sys
 import time
 import sanitize_inputs as si
 
-class Tee(object):
-    '''This  class is used to send duplicate messages to a log file.'''
-    def __init__(self, *files):
-        self.files = files
-    def write(self, obj):
-        for f in self.files:
-            f.write(obj)
-            #f.flush()#if you want the output to be visible immediately
-    def flush(self):
-        for f in self.files:
-            f.flush()
+##class Tee(object):
+##    '''This  class is used to send duplicate messages to a log file.'''
+##    def __init__(self, *files):
+##        self.files = files
+##    def write(self, obj):
+##        for f in self.files:
+##            f.write(obj)
+##            #f.flush()#if you want the output to be visible immediately
+##    def flush(self):
+##        for f in self.files:
+##            f.flush()
 
 class taskobj():
     def __init__(self, serial_number=None, name=None, program_number = None,
@@ -77,7 +77,7 @@ class taskobj():
         '''This method saves the task object to a json file. It appends
         the serial number of the task to the file name.'''
         temp = str(self.Attributes["Serial number"])
-        filename = "task" + temp
+        filename = "task" + temp + ".TE"
         
         with open(filename, 'w') as f:
             json.dump(self.Attributes, f)
@@ -97,15 +97,30 @@ def load_config():
     #Create config file if it does not exist
     #Notify user if config file is corrupted. They can chose to overwrite it.
 
-with open("Task_Engine.log", 'a') as log:
-    #This opens the log file in append mode. opening in this way ensures that if an unexpected closure happens, the log is presserved.
-    original = sys.stdout
-    #This line preserves the ability to print to stdout without logging.
-    sys.stdout = Tee(sys.stdout, log)
-    #This line overwrites sys.stdout with both the original stdout and the log object so that the default print command will print to both.
-    load_config()
+def load_tasks(working_directory):
+    '''This function checks the working directory for existing tasks and
+    loads them into task_list[]. If there are no existing tasks, it creates
+    an empty list. In both cases, this function returns task_list[].'''
+    tasks = []
+    # check the working directory for task files.
+    for files in os.listdir(working_directory):
+        print(files)
+    
+    return(tasks)
 
-    task_list = [] #This needs to load all existing tasks.
+with open("Task_Engine.log", 'a') as log:
+    # This opens the log file in append mode. opening in this way ensures that if an
+    # unexpected closure happens, the log is presserved.
+##    original = sys.stdout
+    # This line preserves the ability to print to stdout without logging.
+##    sys.stdout = Tee(sys.stdout, log)
+    # This line overwrites sys.stdout with both the original stdout and the log object
+    # so that the default print command will print to both.
+    
+    load_config()
+    working_directory = 'C:\\Users\\gmclapp\\Desktop\\Task engine\\Task_Engine'
+   
+    task_list = load_tasks(working_directory) #This needs to load all existing tasks.
     
     while(True):
         print("With a timestamp!",time.strftime("%d%B%Y, %H:%M:%S UTC",time.gmtime()))
