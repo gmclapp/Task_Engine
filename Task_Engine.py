@@ -56,12 +56,14 @@ class taskobj():
             "Priority": priority
             }
 
-    def tprint(self):
+    def tprint(self, short=False):
         '''This method prints a task and it's attributes to the console
         as well as to the log file.'''
-
-        for key, value in self.Attributes.items():
-            print(key, ":", value)
+        if short:
+            print(self.Attributes["Name"])
+        else:
+            for key, value in self.Attributes.items():
+                print(key, ":", value)
         
     def calc_priority(self):
         pass
@@ -151,10 +153,12 @@ with open("Task_Engine.log", 'a') as log:
             new_task = taskobj(new_sn, task_name, prog_num)
             task_list.append(new_task)
             task_list[-1].tprint()
+            task_list[-1].save_task()
                        
         elif key == 2:
             for t in task_list:
-                t.tprint()
+                print("(",t.Attributes["Serial number"],") ",sep='',end='')
+                t.tprint(short=True)
         elif key == 0:
             break
         else:
