@@ -116,6 +116,15 @@ def rename_task(task, new_name):
     task.Attributes["Name"] = new_name
     task.save_task()
     print("Task renamed to", new_name,".",sep='')
+
+def get_task_index(task_list, sn):
+    for i, task in enumerate(task_list):
+        if task.Attributes["Serial number"] == sn:
+            active_task_index = i
+            break
+        else:
+            pass
+    return(active_task_index)
     
 with open("Task_Engine.log", 'a') as log:
     # This opens the log file in append mode. opening in this way ensures that if an
@@ -169,12 +178,8 @@ with open("Task_Engine.log", 'a') as log:
             
             active_task_sn = si.get_integer("Enter the number of the task you'd like to edit.\n>>> ",
                            upper=max_sn+1, lower=0)
-            for i, task in enumerate(task_list):
-                if task.Attributes["Serial number"] == active_task_sn:
-                    active_task_index = i
-                    break
-                else:
-                    pass
+
+            active_task_index = get_task_index(task_list, active_task_sn)
 
             print("What would you like to do with this task?",
                   "(0) Back",
