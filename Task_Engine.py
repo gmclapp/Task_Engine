@@ -76,16 +76,16 @@ class taskobj():
     def save_task(self):
         '''This method saves the task object to a json file. It appends
         the serial number of the task to the file name.'''
-        temp = str(self.Attributes["Serial number"])
-        filename = "task" + temp + ".TE"
+        sn = str(self.Attributes["Serial number"])
+        filename = "task" + sn + ".TE"
         
         with open(filename, 'w') as f:
             json.dump(self.Attributes, f)
         
-    def load_task(self, sn):
+    def load_task(self, filename):
         '''This method loads an Attribute dictionary into a task object
         given a filename.'''
-        filename = "task" + str(sn)
+##        filename = "task" + str(sn) + ".TE"
         with open(filename, 'r') as f:
             self.Attributes = json.load(f)
                       
@@ -104,7 +104,9 @@ def load_tasks(working_directory):
     tasks = []
     # check the working directory for task files.
     for files in os.listdir(working_directory):
-        print(files)
+        if ".TE" in files:
+            tasks.append(taskobj())
+            tasks[-1].load_task(files)
     
     return(tasks)
 
@@ -118,8 +120,8 @@ with open("Task_Engine.log", 'a') as log:
     # so that the default print command will print to both.
     
     load_config()
-    working_directory = 'C:\\Users\\gmclapp\\Desktop\\Task engine\\Task_Engine'
-   
+
+    working_directory = os.curdir
     task_list = load_tasks(working_directory) #This needs to load all existing tasks.
     
     while(True):
@@ -151,7 +153,8 @@ with open("Task_Engine.log", 'a') as log:
             task_list[-1].tprint()
                        
         elif key == 2:
-            pass
+            for t in task_list:
+                t.tprint()
         elif key == 0:
             break
         else:
