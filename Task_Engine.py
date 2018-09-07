@@ -112,6 +112,11 @@ def load_tasks(working_directory):
     
     return(tasks)
 
+def rename_task(task, new_name):
+    task.Attributes["Name"] = new_name
+    task.save_task()
+    print("Task renamed to", new_name,".",sep='')
+    
 with open("Task_Engine.log", 'a') as log:
     # This opens the log file in append mode. opening in this way ensures that if an
     # unexpected closure happens, the log is presserved.
@@ -163,7 +168,7 @@ with open("Task_Engine.log", 'a') as log:
                 t.tprint(short=True)
             
             active_task_sn = si.get_integer("Enter the number of the task you'd like to edit.\n>>> ",
-                           upper=max_sn, lower=0)
+                           upper=max_sn+1, lower=0)
             for i, task in enumerate(task_list):
                 if task.Attributes["Serial number"] == active_task_sn:
                     active_task_index = i
@@ -180,9 +185,8 @@ with open("Task_Engine.log", 'a') as log:
                 pass
             elif key == 1:
                 new_name = input("New name\n>>> ")
-                task_list[active_task_index].Attributes["Name"] = new_name
-                task_list[active_task_index].save_task()
-                print("Task renamed.")
+                rename_task(task_list[active_task_index], new_name)
+                
             elif key == 2:
                 pass # Assign task precursor.
                 
