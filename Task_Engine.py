@@ -122,10 +122,16 @@ with open("Task_Engine.log", 'a') as log:
     # so that the default print command will print to both.
     
     load_config()
-
+    active_task = None # This variable stores a serial number for focusing edits
     working_directory = os.curdir
     task_list = load_tasks(working_directory) #This needs to load all existing tasks.
-    
+    max_sn = 0
+    for task in task_list:
+        if task.Attributes["Serial number"] > max_sn:
+            max_sn = task.Attributes["Serial number"]
+        else:
+            pass
+        
     while(True):
         print("With a timestamp!",time.strftime("%d%B%Y, %H:%M:%S UTC",time.gmtime()))
         print("What would you like to do?",
@@ -134,17 +140,12 @@ with open("Task_Engine.log", 'a') as log:
               "(2) Edit existing task",sep = '\n')
         key = si.get_integer(">>>",3,-1)
         if key == 1:
-            max_sn = 0
-            for task in task_list:
-                if task.Attributes["Serial number"] > max_sn:
-                    max_sn = task.Attributes["Serial number"]
-                else:
-                    pass
             new_sn = max_sn + 1
+            max_sn += 1
             print("New task")
             task_name = input("Enter task name\n>>>")
             
-            ans = si.get_letter("Is this task associated with a program?\n>>>",
+            ans = si.get_letter("Is this task associated with a program? (y/n)\n>>>",
                                 ['y','Y','n','N'])
             if ans.lower() == 'y':
                 prog_num = input("Enter program number\n>>>")
@@ -159,6 +160,9 @@ with open("Task_Engine.log", 'a') as log:
             for t in task_list:
                 print("(",t.Attributes["Serial number"],") ",sep='',end='')
                 t.tprint(short=True)
+            
+            active_task = si.get_integer("Enter the number of the task you'd like to edit.\n>>> ",
+                           upper=max_sn, lower=0)
         elif key == 0:
             break
         else:

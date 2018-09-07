@@ -1,7 +1,7 @@
 '''This package allows the user to request input from the user and handles
 most error checking and input rules.'''
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 
 import numpy as np
 
@@ -49,7 +49,7 @@ def get_integer(prompt=None, upper=float('Inf'), lower=float('-Inf')):
             if lower < number < upper:
                 num_flag = True
             else:
-                print("Enter a real number between",lower,"and",upper)
+                print(prompt,lower,"and",upper)
             
             
         except ValueError:
