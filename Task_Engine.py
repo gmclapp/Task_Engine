@@ -112,6 +112,11 @@ def load_tasks(working_directory):
     
     return(tasks)
 
+def rename_task(task, new_name):
+    task.Attributes["Name"] = new_name
+    task.save_task()
+    print("Task renamed to", new_name,".",sep='')
+    
 with open("Task_Engine.log", 'a') as log:
     # This opens the log file in append mode. opening in this way ensures that if an
     # unexpected closure happens, the log is presserved.
@@ -122,29 +127,31 @@ with open("Task_Engine.log", 'a') as log:
     # so that the default print command will print to both.
     
     load_config()
-
+    active_task = None # This variable stores a serial number for focusing edits
     working_directory = os.curdir
     task_list = load_tasks(working_directory) #This needs to load all existing tasks.
-    
+    max_sn = 0
+    for task in task_list:
+        if task.Attributes["Serial number"] > max_sn:
+            max_sn = task.Attributes["Serial number"]
+        else:
+            pass
+        
     while(True):
         print("With a timestamp!",time.strftime("%d%B%Y, %H:%M:%S UTC",time.gmtime()))
         print("What would you like to do?",
               "(0) Quit",
               "(1) New task",
               "(2) Edit existing task",sep = '\n')
+        
         key = si.get_integer(">>>",3,-1)
         if key == 1:
-            max_sn = 0
-            for task in task_list:
-                if task.Attributes["Serial number"] > max_sn:
-                    max_sn = task.Attributes["Serial number"]
-                else:
-                    pass
             new_sn = max_sn + 1
+            max_sn += 1
             print("New task")
             task_name = input("Enter task name\n>>>")
             
-            ans = si.get_letter("Is this task associated with a program?\n>>>",
+            ans = si.get_letter("Is this task associated with a program? (y/n)\n>>>",
                                 ['y','Y','n','N'])
             if ans.lower() == 'y':
                 prog_num = input("Enter program number\n>>>")
@@ -159,6 +166,30 @@ with open("Task_Engine.log", 'a') as log:
             for t in task_list:
                 print("(",t.Attributes["Serial number"],") ",sep='',end='')
                 t.tprint(short=True)
+            
+            active_task_sn = si.get_integer("Enter the number of the task you'd like to edit.\n>>> ",
+                           upper=max_sn+1, lower=0)
+            for i, task in enumerate(task_list):
+                if task.Attributes["Serial number"] == active_task_sn:
+                    active_task_index = i
+                    break
+                else:
+                    pass
+
+            print("What would you like to do with this task?",
+                  "(0) Back",
+                  "(1) Rename",
+                  "(2) Assign precursor",sep = '\n')
+            key = si.get_integer(">>>",3,-1)
+            if key == 0:
+                pass
+            elif key == 1:
+                new_name = input("New name\n>>> ")
+                rename_task(task_list[active_task_index], new_name)
+                
+            elif key == 2:
+                pass # Assign task precursor.
+                
         elif key == 0:
             break
         else:
