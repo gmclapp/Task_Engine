@@ -138,6 +138,7 @@ with open("Task_Engine.log", 'a') as log:
               "(0) Quit",
               "(1) New task",
               "(2) Edit existing task",sep = '\n')
+        
         key = si.get_integer(">>>",3,-1)
         if key == 1:
             new_sn = max_sn + 1
@@ -161,8 +162,30 @@ with open("Task_Engine.log", 'a') as log:
                 print("(",t.Attributes["Serial number"],") ",sep='',end='')
                 t.tprint(short=True)
             
-            active_task = si.get_integer("Enter the number of the task you'd like to edit.\n>>> ",
+            active_task_sn = si.get_integer("Enter the number of the task you'd like to edit.\n>>> ",
                            upper=max_sn, lower=0)
+            for i, task in enumerate(task_list):
+                if task.Attributes["Serial number"] == active_task_sn:
+                    active_task_index = i
+                    break
+                else:
+                    pass
+
+            print("What would you like to do with this task?",
+                  "(0) Back",
+                  "(1) Rename",
+                  "(2) Assign precursor",sep = '\n')
+            key = si.get_integer(">>>",3,-1)
+            if key == 0:
+                pass
+            elif key == 1:
+                new_name = input("New name\n>>> ")
+                task_list[active_task_index].Attributes["Name"] = new_name
+                task_list[active_task_index].save_task()
+                print("Task renamed.")
+            elif key == 2:
+                pass # Assign task precursor.
+                
         elif key == 0:
             break
         else:
