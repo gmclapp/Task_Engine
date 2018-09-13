@@ -47,7 +47,7 @@ class taskobj():
             "Children": [],
             "Children complete": children_complete,
             "Complete": complete,
-            "Parents": {},
+            "Parents": [],
             "Date completed": date_completed,
             "Customer facing": customer_facing,
             "Top 5": top_5_task,
@@ -70,7 +70,8 @@ class taskobj():
     def add_child(self, child):
         pass
     def add_parent(self, parent):
-        pass
+        self.Attributes["Parents"].append(parent)
+        
     def delete_child(self, child):
         pass
     def delete_parent(self, parent):
@@ -118,6 +119,9 @@ def rename_task(task, new_name):
     print("Task renamed to", new_name,".",sep='')
 
 def get_task_index(task_list, sn):
+    '''This function takes a task serial number and the task list as arguments and
+    returns the index of the specified task in the given list.'''
+
     for i, task in enumerate(task_list):
         if task.Attributes["Serial number"] == sn:
             active_task_index = i
@@ -125,7 +129,15 @@ def get_task_index(task_list, sn):
         else:
             pass
     return(active_task_index)
-    
+
+def list_tasks(task_list):
+    '''This function lists the tasks currently in task_list using the short print
+    style.'''
+
+    for t in task_list:
+        print("(",t.Attributes["Serial number"],") ",sep='',end='')
+        t.tprint(short=True)
+        
 with open("Task_Engine.log", 'a') as log:
     # This opens the log file in append mode. opening in this way ensures that if an
     # unexpected closure happens, the log is presserved.
@@ -172,9 +184,7 @@ with open("Task_Engine.log", 'a') as log:
             task_list[-1].save_task()
                        
         elif key == 2:
-            for t in task_list:
-                print("(",t.Attributes["Serial number"],") ",sep='',end='')
-                t.tprint(short=True)
+            list_tasks(task_list)
             
             active_task_sn = si.get_integer("Enter the number of the task you'd like to edit.\n>>> ",
                            upper=max_sn+1, lower=0)
@@ -193,7 +203,11 @@ with open("Task_Engine.log", 'a') as log:
                 rename_task(task_list[active_task_index], new_name)
                 
             elif key == 2:
-                pass # Assign task precursor.
+                list_tasks(task_list)
+                precursor_task_sn = si.get_integer("Enter the number of the task that must be completed before the active one.\n>>> ",
+                           upper=max_sn+1, lower=0)
+                task_list[active_task_index].add_parent(precursor_task_sn)
+                task_list[active_task_index].save_task()
                 
         elif key == 0:
             break
