@@ -1,6 +1,6 @@
 '''This script allows a burn-down style of task management.'''
 
-__version__ = "0.0.rc6"
+__version__ = "0.0.rc7"
 
 import json
 import os
@@ -14,7 +14,7 @@ class taskobj():
                  time_assigned = 0, time_due = 1700, hours_to_complete = 40,
                  description = None, notes = None, task_type = None,
                  assigned_by = None, turn_in_to = None, status = "Active",
-                 children_complete = False, complete = False, date_completed = None,
+                 parents_complete = False, complete = False, date_completed = None,
                  customer_facing = False, top_5_task = False, customer_request = False, severity = 0, priority = 0):
 
         self.Attributes = {
@@ -33,7 +33,7 @@ class taskobj():
             "Turn in to": turn_in_to,
             "Status": status,
             "Children": [],
-            "Children complete": children_complete,
+            "Parents complete": parents_complete,
             "Complete": complete,
             "Parents": [],
             "Date completed": date_completed,
@@ -54,6 +54,8 @@ class taskobj():
                 print(key, ":", value)
         
     def calc_priority(self):
+        # Consider due date
+        # Consider whether parent tasks are complete
         pass
     def add_child(self, child):
         pass
