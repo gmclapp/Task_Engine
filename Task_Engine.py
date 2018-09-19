@@ -156,9 +156,10 @@ with open("Task_Engine.log", 'a') as log:
         print("What would you like to do?",
               "(0) Quit",
               "(1) New task",
-              "(2) Edit existing task",sep = '\n')
+              "(2) Edit existing task",
+              "(3) Print all tasks",sep = '\n')
         
-        key = si.get_integer(">>>",3,-1)
+        key = si.get_integer(">>>",4,-1)
         if key == 1:
             new_sn = max_sn + 1
             max_sn += 1
@@ -187,8 +188,9 @@ with open("Task_Engine.log", 'a') as log:
             print("What would you like to do with this task?",
                   "(0) Back",
                   "(1) Rename",
-                  "(2) Assign precursor",sep = '\n')
-            key = si.get_integer(">>>",3,-1)
+                  "(2) Assign precursor",
+                  "(3) Print task",sep = '\n')
+            key = si.get_integer(">>>",4,-1)
             if key == 0:
                 pass
             elif key == 1:
@@ -201,6 +203,13 @@ with open("Task_Engine.log", 'a') as log:
                            upper=max_sn+1, lower=0)
                 task_list[active_task_index].add_parent(precursor_task_sn)
                 task_list[active_task_index].save_task()
+
+            elif key == 3:
+                task_list[active_task_index].tprint()
+                
+        elif key == 3:
+            for task in task_list:
+                task.tprint()
                 
         elif key == 0:
             break
