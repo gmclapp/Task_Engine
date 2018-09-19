@@ -132,13 +132,6 @@ def list_tasks(task_list):
         t.tprint(short=True)
         
 with open("Task_Engine.log", 'a') as log:
-    # This opens the log file in append mode. opening in this way ensures that if an
-    # unexpected closure happens, the log is presserved.
-##    original = sys.stdout
-    # This line preserves the ability to print to stdout without logging.
-##    sys.stdout = Tee(sys.stdout, log)
-    # This line overwrites sys.stdout with both the original stdout and the log object
-    # so that the default print command will print to both.
     
     load_config()
     active_task = None # This variable stores a serial number for focusing edits
