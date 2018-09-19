@@ -8,18 +8,6 @@ import sys
 import time
 import sanitize_inputs as si
 
-##class Tee(object):
-##    '''This  class is used to send duplicate messages to a log file.'''
-##    def __init__(self, *files):
-##        self.files = files
-##    def write(self, obj):
-##        for f in self.files:
-##            f.write(obj)
-##            #f.flush()#if you want the output to be visible immediately
-##    def flush(self):
-##        for f in self.files:
-##            f.flush()
-
 class taskobj():
     def __init__(self, serial_number=None, name=None, program_number = None,
                  date_assigned = "Unknown",date_due = "TBD",
@@ -70,7 +58,10 @@ class taskobj():
     def add_child(self, child):
         pass
     def add_parent(self, parent):
-        self.Attributes["Parents"].append(parent)
+        if parent != self.Attributes["Serial number"]:
+            self.Attributes["Parents"].append(parent)
+        else:
+            print("A task cannot be its own pre-requisite.")
         
     def delete_child(self, child):
         pass
