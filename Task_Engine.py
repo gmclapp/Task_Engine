@@ -17,9 +17,11 @@ class GUI:
 
         self.current_task = tk.StringVar()
         self.current_task_proj = tk.StringVar()
+        self.current_task_resource = tk.StringVar()
         
         self.get_tasks()
         self.get_projects()
+        self.get_resources()
         
         self.task_frame()
         self.taskFR.grid(column=0,row=0,padx=2,pady=2,sticky='W')
@@ -38,6 +40,11 @@ class GUI:
         self.taskProject['values'] = list(self.projDF["Name"])
         self.taskProject.bind('<<ComboboxSelected>>',self.taskProj_changed)
 
+        self.taskResource = ttk.Combobox(self.taskFR,
+                                         textvariable=self.current_task_resource)
+        self.taskResource['values'] = list(self.resourceDF["Name"])
+        self.taskResource.bind('<<ComboboxSelected>>',self.taskResource_changed)
+
         self.applyPB = ttk.Button(self.taskFR,
                                   command=self.apply_changes,
                                   text="Apply")
@@ -45,7 +52,8 @@ class GUI:
         # Place elements
         self.task.grid(column=0,row=0,padx=2,pady=2,sticky='W')
         self.taskProject.grid(column=1,row=0,padx=2,pady=2,sticky='W')
-        self.applyPB.grid(column=2,row=0,padx=2,pady=2,sticky='W')
+        self.taskResource.grid(column=2,row=0,padx=2,pady=2,sticky='W')
+        self.applyPB.grid(column=3,row=0,padx=2,pady=2,sticky='W')
         
     def task_changed(self,event=None):
         self.DFcurrent = self.DF.loc[self.DF["Name"] == self.current_task.get()]
@@ -55,12 +63,18 @@ class GUI:
         
     def taskProj_changed(self,event=None):
         self.DFcurrent["Project"] = self.current_task_proj.get()
+
+    def taskResource_changed(self,event=None):
+        self.DFcurrent["Resource"] = self.current_task_resource.get()
         
     def get_tasks(self):
         self.DF = pd.read_csv("Tasks.csv")
         
     def get_projects(self):
         self.projDF = pd.read_csv("Projects.csv")
+
+    def get_resources(self):
+        self.resourceDF = pd.read_csv("Resources.csv")
 
     def refresh_fields(self):
         self.current_task_proj.set(self.DFcurrent["Project"])
@@ -73,6 +87,7 @@ class GUI:
 ##        self.DFcurrent.set_index("Serial number")
         
         self.DF.update(self.DFcurrent)
+        self.DF.to_csv("Tasks.csv")
 ##        self.DF.reset_index()
 ##        self.DFcurrent.reset_index()
         

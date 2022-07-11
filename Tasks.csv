@@ -1,4 +1,4 @@
-Serial number,Name,Description,Predecessors,Project
-1,Example,Example task description,"1,2",
-2,Example sub,Sub task description,,
-3,Another sub,Sub task description also,,
+,Serial number,Name,Description,Predecessors,Project,Resource
+0,1.0,Example,Example task description,"1,2",18-1006 - Triple Gap Two-Pass Operation,Glenn Clapp
+1,2.0,Example sub,Sub task description,,,
+2,3.0,Another sub,Sub task description also,,,
